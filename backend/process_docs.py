@@ -1,4 +1,4 @@
-from langchain_community.document_loaders import PyPDFDirectoryLoader
+from langchain_community.document_loaders import PyPDFDirectoryLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
 from langchain_chroma import Chroma
@@ -78,7 +78,14 @@ def update_chroma_database(doc_chunks, chroma_directory):
         chroma_db.add_documents(new_documents, ids=new_document_ids)
         print("Added!")
 
+# Function to only process uploaded file instead of uploading all files again
+def handle_single(directory_path, chroma_directory):
+    pdf_loader = PyPDFLoader(directory_path)                # Load PDF
+    doc_chunks = split_documents_into_chunks(pdf_loader.load())      # Generate chunks
+    chunks_with_ids = generate_chunk_ids(doc_chunks)                 # Assign ID's
+    update_chroma_database(chunks_with_ids, chroma_directory)        # Update database with new chunks
 
+# Function to process entire directory on startup
 def process_directory(directory_path, chroma_directory):
     documents = load_pdf_documents(directory_path)
     document_chunks = split_documents_into_chunks(documents)

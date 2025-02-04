@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename                   # For file uploads
 from langchain_chroma import Chroma
 import ollama
+import os
 from langchain_huggingface import HuggingFaceEmbeddings
 # Uncomment the line below to use OpenAIEmbeddings instead of a local model. However, you will need your own API keys to use this model instead, and it won't be completely local.
 # from langchain.embeddings import OpenAIEmbeddings
-from process_docs import process_directory
+from process_docs import process_directory, handle_single
 import datetime
 from flask_cors import CORS
 # uncomment the line below to use OpenAIEmbeddings instead of a local model
@@ -27,16 +29,30 @@ def query_ollama(prompt, model):
 
 # API
 app = Flask(__name__)
+upload_folder = "./data"
+app.config['UPLOAD_FOLDER'] = upload_folder
 CORS(app)
 
 @app.route('/start', methods=['GET'])
 def greet():
     current_time = datetime.datetime.now()
-    prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, construct a greeting message based on the time: {current_time}"
+    prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, greet me in a human way, but dont mention the exact time, base your greeting message on it: {current_time}"
     response = query_ollama(prompt, "llama3.2")
     return jsonify({"response": response})
 
-
+@app.route('/send', methods = ['POST'])
+def handle_file_upload():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"})
+    file = request.files['file']
+    if file and file.filename.lower().endswith('.pdf'):           # Only allow PDF's
+        filename = secure_filename(file.filename)
+        uploaded_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(uploaded_path)
+        handle_single(uploaded_path, "./ChromaDB")
+        return jsonify({"message": "Success!"})
+        
+        
 @app.route('/query', methods = ['POST'])
 def handle_query():
     data = request.json
