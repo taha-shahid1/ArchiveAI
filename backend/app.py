@@ -6,13 +6,13 @@ from langchain_huggingface import HuggingFaceEmbeddings
 # from langchain.embeddings import OpenAIEmbeddings
 from process_docs import process_directory
 import datetime
-
+from flask_cors import CORS
 # uncomment the line below to use OpenAIEmbeddings instead of a local model
 # from langchain.embeddings import OpenAIEmbeddings
 # Comment the line below out if you switch to OpenAIEmbeddings
 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")      # Change to embedding_model = OpenAIEmbeddings() if you wish to use OpenAIEmbeddings instead
-process_directory("./backend/data", "./backend/ChromaDB")
-db = Chroma(persist_directory="./backend/ChromaDB", embedding_function=embedding_model)
+process_directory("./data", "./ChromaDB")
+db = Chroma(persist_directory="./ChromaDB", embedding_function=embedding_model)
 
 chat_history = []
 # Model parameter to allow users to choose their preferred LLM
@@ -27,8 +27,9 @@ def query_ollama(prompt, model):
 
 # API
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/start', methods = ['POST'])
+@app.route('/start', methods=['GET'])
 def greet():
     current_time = datetime.datetime.now()
     prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, construct a greeting message based on the time: {current_time}"
@@ -53,7 +54,7 @@ def handle_query():
 
 
     # Form the prompt for Ollama
-    full_prompt = f"Use the following retrieved documents to answer the question, and if no relevant documents were found, include that in response:\n\n{retrieved_text}\n\nUser: {user_prompt}\nAI:"
+    full_prompt = f"Use the following retrieved documents to answer the question, and if no relevant documents were found, try to answer it as best as you can, while also acknowledging in response that no relevant documents were found:\n\n{retrieved_text}\n\nUser: {user_prompt}\nAI:"
     response = query_ollama(full_prompt, "llama3.2")
     return jsonify({"response": response})
 
