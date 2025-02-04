@@ -5,6 +5,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 # Uncomment the line below to use OpenAIEmbeddings instead of a local model. However, you will need your own API keys to use this model instead, and it won't be completely local.
 # from langchain.embeddings import OpenAIEmbeddings
 from process_docs import process_directory
+import datetime
 
 # uncomment the line below to use OpenAIEmbeddings instead of a local model
 # from langchain.embeddings import OpenAIEmbeddings
@@ -26,6 +27,14 @@ def query_ollama(prompt, model):
 
 # API
 app = Flask(__name__)
+
+@app.route('/start', methods = ['POST'])
+def greet():
+    current_time = datetime.datetime.now()
+    prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, construct a greeting message based on the time: {current_time}"
+    response = query_ollama(prompt, "llama3.2")
+    return jsonify({"response": response})
+
 
 @app.route('/query', methods = ['POST'])
 def handle_query():

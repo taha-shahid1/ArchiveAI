@@ -15,8 +15,6 @@ def load_pdf_documents(directory_path):
     return pdf_loader.load()
 
 
-
-
 # Utility function to split documents to chunks
 def split_documents_into_chunks(documents_list: list[Document]):             # Type hint for the document schema
     text_splitter_instance = RecursiveCharacterTextSplitter(
@@ -37,7 +35,7 @@ def generate_chunk_ids(doc_chunks:list[Document]):                         # Typ
         page_number = doc_chunk.metadata.get("page")
         current_page = f"{file_source}:{page_number}"
 
-        # Increment the counter if the page ID is same as last one
+        # Increment the counter if the page ID is same as last one (for uniqueness)
         if current_page == last_page:
             chunk_index += 1
         else:
