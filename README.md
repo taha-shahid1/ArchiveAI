@@ -54,9 +54,10 @@ This will start the Flask backend.
 
 ### 2. Start the Frontend
 
-Open a new terminal window, navigate to the `ArchiveAI` directory, and run:
+Open a new terminal window, navigate to the `ArchiveAI` directory, and type in these commands:
 
 ```sh
+cd frontend
 npm run dev
 ```
 
