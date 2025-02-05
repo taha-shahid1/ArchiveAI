@@ -38,7 +38,7 @@ CORS(app)
 @app.route('/start', methods=['GET'])
 def greet():
     current_time = datetime.datetime.now()
-    prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, greet me in a human way, but dont mention the exact time, base your greeting message on it: {current_time}"
+    prompt = f"Based on the current time of my system, ignoring the date and only looking at the time in a 24 hour format, greet me in a human way, but dont mention the exact time, base your greeting message on it: {current_time}. Also, instruct me to use the /followup command by including it as the first word of my message if I have a follow-up question which does not require searching through documents (as this is an application to chat with an LLM about your documents)"
     response = query_ollama(prompt, "llama3.2")
     return jsonify({"response": response})
 
@@ -62,6 +62,12 @@ def handle_query():
     
     if not user_prompt:
         return jsonify({"error": "Prompt not provided"}), 400
+    
+    first_word = user_prompt.split()[0] if user_prompt else ""
+    if first_word == "/followup":
+        prompt = f"Use the chat history to answer the following prompt to the best of your abilities. You are not limited to the chat history alone to form a response, and you can use external knowledge to help the user. \nUser: {user_prompt}\nAI"
+        response = query_ollama(prompt, "llama3.2")
+        return jsonify({"response": response})
     
     results = db.similarity_search_with_score(user_prompt, k=3)  # Get top 3 relevant chunks
     # Build context from retrieved documents
