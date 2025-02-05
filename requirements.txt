@@ -1,0 +1,9 @@
+Flask==3.1.0
+Flask_Cors==5.0.0
+langchain==0.3.17
+langchain_chroma==0.2.1
+langchain_community==0.3.16
+langchain_huggingface==0.1.2
+langchain_text_splitters==0.3.5
+ollama==0.4.7
+Werkzeug==3.1.3

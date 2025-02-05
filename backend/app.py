@@ -13,8 +13,11 @@ from flask_cors import CORS
 # from langchain.embeddings import OpenAIEmbeddings
 # Comment the line below out if you switch to OpenAIEmbeddings
 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")      # Change to embedding_model = OpenAIEmbeddings() if you wish to use OpenAIEmbeddings instead
-process_directory("./data", "./ChromaDB")
-db = Chroma(persist_directory="./ChromaDB", embedding_function=embedding_model)
+archive_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+data_dir = os.path.join(archive_dir, 'backend', 'data')
+chroma_dir = os.path.join(archive_dir, 'backend', 'ChromaDB')
+process_directory(data_dir, chroma_dir)
+db = Chroma(persist_directory=chroma_dir, embedding_function=embedding_model)
 
 chat_history = []
 # Model parameter to allow users to choose their preferred LLM
@@ -26,10 +29,9 @@ def query_ollama(prompt, model):
     return response["message"]["content"]
 
 
-
 # API
 app = Flask(__name__)
-upload_folder = "./data"
+upload_folder = data_dir
 app.config['UPLOAD_FOLDER'] = upload_folder
 CORS(app)
 
@@ -49,7 +51,7 @@ def handle_file_upload():
         filename = secure_filename(file.filename)
         uploaded_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(uploaded_path)
-        handle_single(uploaded_path, "./ChromaDB")
+        handle_single(uploaded_path, chroma_dir)
         return jsonify({"message": "Success!"})
         
         
