@@ -64,10 +64,19 @@ The React frontend will start, and a URL will be displayed in the terminal. Open
 
 ### Closing ArchiveAI
 To stop the backend, go to the terminal window where the backend is running, and press:
+
 ```sh
 CTRL + C
 ```
+
 To stop the frontend, go to the terminal window where the frontend is running, and press:
+
 ```sh
 CTRL + C
+```
+
+To stop llama3.2, go to the terminal window where llama3.2 is running, and type in the following command:
+
+```sh
+/bye
 ```
