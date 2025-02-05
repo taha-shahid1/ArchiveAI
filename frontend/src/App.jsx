@@ -22,6 +22,7 @@ const App = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isFollowUp, setIsFollowUp] = useState(false)
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -91,9 +92,9 @@ const App = () => {
       setMessages(prev => [...prev, { type: 'assistant', content: data.response }]);
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prev => [...prev, { 
-        type: 'error', 
-        content: `Error: ${error.message || 'Failed to send message. Please try again.'}` 
+      setMessages(prev => [...prev, {
+        type: 'error',
+        content: `Error: ${error.message || 'Failed to send message. Please try again.'}`
       }]);
     } finally {
       setIsLoading(false);
@@ -115,18 +116,18 @@ const App = () => {
         method: 'POST',
         body: formData,
       });
-      
+
       if (!response.ok) throw new Error('Upload failed');
-      
-      setMessages(prev => [...prev, { 
-        type: 'system', 
-        content: `Successfully uploaded ${file.name}` 
+
+      setMessages(prev => [...prev, {
+        type: 'system',
+        content: `Successfully uploaded ${file.name}`
       }]);
     } catch (error) {
       console.error('Error uploading file:', error);
-      setMessages(prev => [...prev, { 
-        type: 'error', 
-        content: `Failed to upload ${file.name}` 
+      setMessages(prev => [...prev, {
+        type: 'error',
+        content: `Failed to upload ${file.name}`
       }]);
     } finally {
       setIsUploading(false);
@@ -144,7 +145,7 @@ const App = () => {
           <Archive className="w-8 h-8 text-blue-500" />
           <span className="text-xl font-bold text-white">ArchiveAI</span>
         </div>
-        
+
         <div className="flex-1">
           <div className="relative">
             <input
@@ -158,9 +159,8 @@ const App = () => {
             {/*File upload feature to be implemented*/}
             <label
               htmlFor="file-upload"
-              className={`flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-3 cursor-pointer transition-colors ${
-                isUploading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className={`flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-3 cursor-pointer transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             >
               <Upload className="w-5 h-5" />
               <span>{isUploading ? 'Uploading...' : 'Upload PDF'}</span>
@@ -178,15 +178,14 @@ const App = () => {
               className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-4 ${
-                  message.type === 'user'
+                className={`max-w-[80%] rounded-lg p-4 ${message.type === 'user'
                     ? 'bg-blue-600 text-white'
                     : message.type === 'error'
-                    ? 'bg-red-600 text-white'
-                    : message.type === 'system'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-800 text-gray-100'
-                }`}
+                      ? 'bg-red-600 text-white'
+                      : message.type === 'system'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-800 text-gray-100'
+                  }`}
               >
                 {message.content}
               </div>
@@ -201,13 +200,18 @@ const App = () => {
             <input
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value)
+                setIsFollowUp(e.target.value.startsWith("/followup"))
+              }}
               placeholder="Type your message..."
-              className="flex-1 bg-gray-800 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`flex-1 bg-gray-800 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isFollowUp ? "font-mono text-primary" : ""
+                }`}
               disabled={isLoading}
             />
             <button
               type="submit"
+              onClick={() => setIsFollowUp(false)}
               disabled={isLoading || !input.trim()}
               className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
