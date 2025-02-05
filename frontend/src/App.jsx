@@ -84,7 +84,7 @@ const App = () => {
 
       // Get response
       const data = await response.json();
-      
+
       if (!data || !data.response) {
         throw new Error('Invalid response format from server');
       }
@@ -205,7 +205,7 @@ const App = () => {
                 setIsFollowUp(e.target.value.startsWith("/followup"))
               }}
               placeholder="Type your message..."
-              className={`flex-1 bg-gray-800 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isFollowUp ? "font-mono text-primary" : ""
+              className={`flex-1 bg-gray-800 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isFollowUp ? "font-semibold text-primary" : ""
                 }`}
               disabled={isLoading}
             />

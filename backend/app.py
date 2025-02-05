@@ -65,7 +65,7 @@ def handle_query():
     
     first_word = user_prompt.split()[0] if user_prompt else ""
     if first_word == "/followup":
-        prompt = f"Use the chat history to answer the following prompt to the best of your abilities. You are not limited to the chat history alone to form a response, and you can use external knowledge to help the user. \nUser: {user_prompt}\nAI"
+        prompt = f"Use the chat history to answer the following prompt to the best of your abilities. You are not limited to the chat history alone to form a response, and you can use external knowledge to help the user. Do not talk about the /followup command in your response. \nUser: {user_prompt}\nAI"
         response = query_ollama(prompt, "llama3.2")
         return jsonify({"response": response})
     
