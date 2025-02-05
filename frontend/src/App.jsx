@@ -111,7 +111,7 @@ const App = () => {
     formData.append('file', file);
 
     try {
-      // Send route for file upload, to be implemented
+      // Send route for file upload
       const response = await fetch(`${API_URL}/send`, {
         method: 'POST',
         body: formData,
@@ -156,7 +156,7 @@ const App = () => {
               className="hidden"
               id="file-upload"
             />
-            {/*File upload feature to be implemented*/}
+            {/*File upload*/}
             <label
               htmlFor="file-upload"
               className={`flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg p-3 cursor-pointer transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''
