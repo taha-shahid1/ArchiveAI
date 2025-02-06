@@ -9,7 +9,7 @@ from langchain_chroma import Chroma
 # Comment out/delete the line below if you wish to use OpenAIEmbeddings instead
 from langchain_huggingface import HuggingFaceEmbeddings
 
-# Utility functions to get data from PDF files and Word files in desired directory
+# Utility functions to get data from PDF files
 def load_pdf_documents(directory_path):
     pdf_loader = PyPDFDirectoryLoader(directory_path)
     return pdf_loader.load()
