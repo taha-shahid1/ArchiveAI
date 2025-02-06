@@ -4,7 +4,7 @@ ArchiveAI allows you to chat with your documents using LLMs while keeping your i
 
 ## Prerequisites
 
-Before getting started, ensure you have Python 3.9.12 and [Ollama](https://ollama.com/download) installed to run a local LLM.
+Before getting started, ensure you have Python 3.9.12, Node and [Ollama](https://ollama.com/download) installed to run a local LLM.
 
 Once installed, run llama3.2 by running the following command in your terminal:
 
